@@ -1,3 +1,10 @@
+locals {
+  ci_username = "${var.ci_username != "" ? var.ci_username : data.aws_ssm_parameter.github_username.value}"
+}
+
+data "aws_ssm_parameter" "github_username" {
+  name = "${var.org_rev_fqdn}.terraform.github-ci.username"
+}
 data "aws_ssm_parameter" "github_token" {
   name = "${var.org_rev_fqdn}.terraform.github-token"
 }
@@ -55,7 +62,7 @@ resource "github_team" "devs" {
 
 resource "github_team_membership" "ci-account" {
   team_id  = "${github_team.admins.id}"
-  username = "${var.ci_username}"
+  username = "${local.ci_username}"
   role     = "member"
 }
 

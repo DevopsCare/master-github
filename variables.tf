@@ -5,7 +5,11 @@ variable "project_prefix" {}
 variable "project_name" {}
 
 variable "github_organization" {}
-variable "ci_username" {}
+variable "ci_username" {
+  type        = "string"
+  description = "Name of CI account to be added to repos admins. Defaults to Organization github account name from SSM"
+  default     = ""
+}
 
 variable "github_projects" {
   type = "list"
@@ -20,6 +24,6 @@ variable "github_init_repos" {
 }
 
 variable "github_init_branch" {
-  type = "string"
+  type    = "string"
   default = "master"
 }
