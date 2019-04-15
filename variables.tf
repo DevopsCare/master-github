@@ -10,3 +10,16 @@ variable "ci_username" {}
 variable "github_projects" {
   type = "list"
 }
+
+variable "create_terraform_repo" {
+  default = true
+}
+
+variable "github_init_repos" {
+  default = false
+}
+
+variable "github_init_branch" {
+  type = "string"
+  default = "master"
+}

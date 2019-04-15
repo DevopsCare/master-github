@@ -7,17 +7,38 @@ provider "github" {
   organization = "${var.github_organization}"
 }
 
+resource "github_repository" "terraform-repo" {
+  count       = "${var.create_terraform_repo ? 1 : 0}"
+  name        = "${var.project_prefix}-terraform"
+  description = "\"${var.project_name}\" Terraform Infrastructure repository"
+
+  private      = true
+  has_issues   = false
+  has_wiki     = false
+  has_projects = false
+  auto_init    = false
+
+  lifecycle {
+    ignore_changes = ["description", "private", "has_issues", "has_wiki", "has_projects",
+      "auto_init", "gitignore_template"]
+  }
+}
+
 resource "github_repository" "repo" {
   count       = "${length(var.github_projects)}"
   name        = "${var.project_prefix}-${element(var.github_projects, count.index)}"
   description = "\"${var.project_name}\" ${element(var.github_projects, count.index)} repository"
 
-  private            = true
-  has_issues         = false
-  has_wiki           = false
-  has_projects       = false
-  auto_init          = true
-  gitignore_template = "Java"
+  private      = true
+  has_issues   = false
+  has_wiki     = false
+  has_projects = false
+  auto_init    = "${var.github_init_repos}"
+
+  lifecycle {
+    ignore_changes = ["description", "private", "has_issues", "has_wiki", "has_projects",
+      "auto_init", "gitignore_template"]
+  }
 }
 
 resource "github_team" "admins" {
@@ -38,6 +59,13 @@ resource "github_team_membership" "ci-account" {
   role     = "member"
 }
 
+resource "github_team_repository" "repo-admins-terraform" {
+  count      = "${var.create_terraform_repo ? 1 : 0}"
+  team_id    = "${github_team.admins.id}"
+  repository = "${github_repository.terraform-repo.name}"
+  permission = "admin"
+}
+
 resource "github_team_repository" "repo-admins" {
   count      = "${length(var.github_projects)}"
   team_id    = "${github_team.admins.id}"
@@ -52,9 +80,9 @@ resource "github_team_repository" "repo-devs" {
   permission = "push"
 }
 
-resource "github_branch_protection" "master" {
-  count          = "${length(var.github_projects)}"
+resource "github_branch_protection" "this" {
+  count          = "${var.github_init_repos ? length(var.github_projects) : 0}"
   repository     = "${element(github_repository.repo.*.name, count.index)}"
-  branch         = "master"
+  branch         = "${var.github_init_branch}"
   enforce_admins = false
 }
