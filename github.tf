@@ -69,7 +69,7 @@ resource "github_team_membership" "ci-account" {
 resource "github_team_repository" "repo-admins-terraform" {
   count      = "${var.create_terraform_repo ? 1 : 0}"
   team_id    = "${github_team.admins.id}"
-  repository = "${github_repository.terraform-repo.name}"
+  repository = "${github_repository.terraform-repo[0].name}"
   permission = "admin"
 }
 
