@@ -6,13 +6,13 @@ variable "project_name" {}
 
 variable "github_organization" {}
 variable "ci_username" {
-  type        = "string"
+  type        = string
   description = "Name of CI account to be added to repos admins. Defaults to Organization github account name from SSM"
   default     = ""
 }
 
 variable "github_projects" {
-  type = "list"
+  type = list(string)
 }
 
 variable "create_terraform_repo" {
@@ -24,6 +24,6 @@ variable "github_init_repos" {
 }
 
 variable "github_init_branch" {
-  type    = "string"
+  type    = string
   default = "master"
 }
