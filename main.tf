@@ -8,5 +8,4 @@ data "aws_ssm_parameter" "github_token" {
 provider "github" {
   token        = data.aws_ssm_parameter.github_token.value
   organization = var.github_organization
-  version = "2.9.2"
 }
