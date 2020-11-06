@@ -1,4 +1,3 @@
-variable "aws_region" {}
 variable "org_fqdn" {}
 variable "org_rev_fqdn" {}
 variable "project_prefix" {}
